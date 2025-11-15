@@ -107,6 +107,9 @@ void ina_reset(ina219_t *ina219);
 void ina_setCalibration(ina219_t *ina219, uint16_t Calibration);
 void ina_getConfig(ina219_t *ina219);
 void ina_setConfig(ina219_t *ina219, uint16_t Config);
+void ina_Config(ina219_t *ina219);
+void set_PowerMode(ina219_t *ina219, ina_config_operatingmode mode);
+
 
 
 
