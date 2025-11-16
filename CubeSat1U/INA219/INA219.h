@@ -5,22 +5,22 @@
 #include "stm32h7xx_hal.h"
 
 typedef enum {
-    Address_gnd_gnd = 1000000,
-    Address_gnd_vcc = 1000001,
-    Address_gnd_sda = 1000010,
-    Address_gnd_scl = 1000011,
-    Address_vcc_gnd = 1000100,
-    Address_vcc_vcc = 1000101,
-    Address_vcc_sda = 1000110,
-    Address_vcc_scl = 1000111,
-    Address_sda_gnd = 1001000,
-    Address_sda_vcc = 1001001,
-    Address_sda_sda = 1001010,
-    Address_sda_scl = 1001011,
-    Address_scl_gnd = 1001100,
-    Address_scl_vcc = 1001101,
-    Address_scl_sda = 1001110,
-    Address_scl_scl = 1001111
+    Address_gnd_gnd = 0x40,
+    Address_gnd_vcc = 0x41,
+    Address_gnd_sda = 0x42,
+    Address_gnd_scl = 0x43,
+    Address_vcc_gnd = 0x44,
+    Address_vcc_vcc = 0x45,
+    Address_vcc_sda = 0x46,
+    Address_vcc_scl = 0x47,
+    Address_sda_gnd = 0x48,
+    Address_sda_vcc = 0x49,
+    Address_sda_sda = 0x4A,
+    Address_sda_scl = 0x4B,
+    Address_scl_gnd = 0x4C,
+    Address_scl_vcc = 0x4D,
+    Address_scl_sda = 0x4E,
+    Address_scl_scl = 0x4F
 } ina_address_A0_A1;
 
 //Registor AddressAddress
@@ -56,7 +56,7 @@ typedef enum {
     ina_config_badc_12bit_16s_8150us = 0x0600,
     ina_config_badc_12bit_32s_17020us = 0x0680,
     ina_config_badc_12bit_64s_35050us = 0x0700,
-    ina_config_badc_12bit_128s_68100us = 0x07800
+    ina_config_badc_12bit_128s_68100us = 0x0780
 } ina_config_badc;                             //Bit 7-1010
 
 typedef enum {
@@ -70,7 +70,7 @@ typedef enum {
     ina_config_shuntadc_12bit_16s_8150us = 0x0060,
     ina_config_shuntadc_12bit_32s_17020us = 0x0068,
     ina_config_shuntadc_12bit_64s_35050us = 0x0070,
-    ina_config_shuntadc_12bit_128s_68100us = 0x000780
+    ina_config_shuntadc_12bit_128s_68100us = 0x0780
 } ina_config_shuntadc;
 
 typedef enum {
@@ -89,28 +89,36 @@ typedef enum {
 typedef struct {
     I2C_HandleTypeDef *ina219_i2c;
     uint8_t Address;
+    battery_state check;
 } ina219_t;
 
 typedef enum {
     battery_START,
-    battery_Ok,
-    battery_LOw
+    battery_OK,
+    battery_LOW
 } battery_state;
 
-uint16_t ina_ReadBusVoltage(ina219_t *ina219);
-uint16_t ina_ReadCurrent(ina219_t *ina219);
-uint16_t ina_ReadShuntVoltage(ina219_t *ina219);
-uint16_t ina_ReadPower(ina219_t *ina219);
+uint16_t ina219_ReadBusVoltage(ina219_t *ina219);
+int16_t ina219_ReadCurrent(ina219_t *ina219);
+int16_t ina219_ReadShuntVoltage(ina219_t *ina219);
+float ina219_ReadPower(ina219_t *ina219);
 
 
-void ina_reset(ina219_t *ina219);
-void ina_setCalibration(ina219_t *ina219, uint16_t Calibration);
-void ina_getConfig(ina219_t *ina219);
-void ina_setConfig(ina219_t *ina219, uint16_t Config);
-void ina_Config(ina219_t *ina219);
+void ina219_reset(ina219_t *ina219);
+void ina219_setCalibration(ina219_t *ina219, uint16_t Calibration);
+uint16_t ina219_getConfig(ina219_t *ina219);
+void ina219_setConfig(ina219_t *ina219, uint16_t Config);
+void ina219_Config(ina219_t *ina219);
 void set_PowerMode(ina219_t *ina219, ina_config_operatingmode mode);
+uint8_t ina219_init(ina219_t *ina219, I2C_HandleTypeDef *hi2c, uint8_t address);
+float ina219_BatteryLife(ina219_t *ina219);
+battery_state Checkbattery(ina219_t *ina219, float BatteryThresold);
 
+typedef struct{
+    float current_lsb;
+    float power_lsb;
+} lsb_t;
 
-
+bool isFirst;
 
 #endif
