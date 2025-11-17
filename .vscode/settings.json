@@ -1,6 +1,7 @@
 {
-  "files.associations": {
-    "stm32h7xx_hal.h": "c",
-    "mpu6050.h": "c"
-  }
+    "files.associations": {
+        "stm32h7xx_hal.h": "c",
+        "compare": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
